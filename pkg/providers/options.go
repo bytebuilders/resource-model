@@ -29,6 +29,17 @@ import (
 	"gomodules.xyz/flags"
 )
 
+var providerMapping = map[v1alpha1.CredentialType]string{
+	v1alpha1.CredentialTypeAWS:          cloud.AWS,
+	v1alpha1.CredentialTypeGoogleCloud:  cloud.GCE,
+	v1alpha1.CredentialTypeDigitalOcean: cloud.DigitalOcean,
+	v1alpha1.CredentialTypePacket:       cloud.Packet,
+	v1alpha1.CredentialTypeAzure:        cloud.Azure,
+	v1alpha1.CredentialTypeVultr:        cloud.Vultr,
+	v1alpha1.CredentialTypeLinode:       cloud.Linode,
+	v1alpha1.CredentialTypeScaleway:     cloud.Scaleway,
+}
+
 type Options struct {
 	Provider string
 	Do       credential.DigitalOcean
@@ -49,7 +60,7 @@ func NewOptions() *Options {
 
 func NewOptionsForCredential(c v1alpha1.Credential) Options {
 	opt := Options{
-		Provider: string(c.Spec.Type),
+		Provider: providerMapping[c.Spec.Type],
 	}
 	switch c.Spec.Type {
 	case v1alpha1.CredentialTypeAWS:
